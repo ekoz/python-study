@@ -18,3 +18,5 @@
 		maxFileSize 设置单个文件删除临界值，单位 M ，如果检测到所有文件大小超过预警值(maxSize)，则删除pathlist下超过临界值(maxFileSize)的文件
 		interval 设置定时器执行频率，单位 分钟
 
+### scp_timer.py
+* 从远端服务器获取指定目录下的所有文件夹和文件，复制到本地指定的文件夹
