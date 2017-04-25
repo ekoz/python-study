@@ -8,10 +8,10 @@ import paramiko
 import os
 from stat import S_ISDIR
 
-server='172.16.9.55'
-port='12598'
-username='root'
-password='508956'
+server='***.**.**.**'
+port='**'
+username='****'
+password='******'
 
 def getpath(path):
 	if not path.endswith('/'):
