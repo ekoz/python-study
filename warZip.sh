@@ -28,7 +28,11 @@ if [ $isHandler = true ] ; then
 	unzip $warName -d $folderName
 	echo "解压完毕..."
 	echo "开始运行命令 zip -r "$folderName.zip" "$folderName" 压缩成zip包..."
-	sleep 5s
+	sleep 3s
 	zip -r "$folderName.zip" "$folderName"
 	echo "压缩完毕..."
+	echo "删除目录 $folderName ..."
+	sleep 3s
+	rm -rf $folderName
+	echo "目录删除完毕..."
 fi
