@@ -46,17 +46,17 @@ rename "$warName" "kbaseui-std.war"
 rename "$warName" "kbaseui-dev.war"
 rename "$warName" "kbase-report.war"
 rename "$warName" "kbase-converter.war"
-#rename "$warName" "kbase-core.war"
+rename "$warName" "robot-search.war"
 echo "移动后的文件名为 " $warName
 sleep 1
 	
 folderName=`echo ${warName%.war}`
 echo "开始运命令 unzip $warName -d $folderName 解压..."
-unzip $warName -d $folderName
+unzip $warName -d $folderName > /dev/null
 echo "解压完毕..."
 echo "开始运行命令 zip -r "$folderName.zip" "$folderName" 压缩成zip包 ..."
 sleep 3s
-zip -r "$folderName.zip" "$folderName"
+zip -r "$folderName.zip" "$folderName" > /dev/null
 echo "压缩完毕..."
 echo "删除目录 $folderName ..."
 sleep 3s
