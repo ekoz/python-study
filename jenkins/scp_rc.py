@@ -4,7 +4,7 @@
 #date 2017-05-24 19:40
 #[params]
 #warNameStr : .zip file name want to scp to release server(217).
-#eg : ./scp_rc.py kbase-core.zip,kbaseui-std.zip
+#eg : ./scp_rc.py kbase-core.zip kbaseui-std.zip
 #[description]
 #scp .zip file to release server.
 
@@ -18,7 +18,6 @@ server = '172.16.1.217'
 port = 12598
 username = 'root'
 password = 'your_password'
-py_cmd, warNameStr = argv
 path = sys.path[0] #/home/eko.zhan
 remote_dir = '/opt/var/www/html/kbase/kbase-core/v3.0.6'
 
@@ -38,9 +37,7 @@ def upload(warNameList):
         print e
 
 if __name__=='__main__':
-    #用空格分隔传送的包名集合
-    if len(warNameStr)>0:
-        warNameList = warNameStr.split(',')
+    warNameList = argv[1:]
 
     if len(warNameList)>0:
         #print warNameList

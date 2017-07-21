@@ -3,10 +3,10 @@
 #auther eko.zhan
 #date 2017-05-24 19:40
 #[params]
-#warNameStr : .zip file name want to scp to release server(217).
-#eg : ./scp_rc.py kbase-core.zip,kbaseui-std.zip
+#warNameStr : get release file from release server(217).
+#eg : ./get_package.py kbase-core.zip kbaseui-std.zip
 #[description]
-#scp .zip file to release server.
+#scp .zip file from release server.
 
 
 import paramiko
@@ -18,7 +18,6 @@ server = '172.16.1.217'
 port = 12598
 username = 'root'
 password = 'your_password'
-py_cmd, package_name = argv
 path = sys.path[0] #/home/eko.zhan
 remote_base_dir = '/opt/var/www/html/kbase'
 
@@ -42,9 +41,7 @@ def get_file(package_name_list):
         print e
 
 if __name__=='__main__':
-    #用西文逗号分隔传送的包名集合
-    if len(package_name)>0:
-        package_name_list = package_name.split(',')
+    package_name_list = argv[1:]
 
     if len(package_name_list)>0:
         #print warNameList

@@ -2,7 +2,7 @@
 -----------------------------
 > some usefull script of python
 
-###	openoffice.py
+###    openoffice.py
 * 采用OpenOffice附件转换时，由于一些无法估测的因素转换失败，导致OpenOffice进程卡死，每隔五分钟检查一次openoffice端口，如果无法ping通，则启动openoffice
 * openoffice.sh 启动命令 ./openoffice.sh start 停止命令 ./openoffice.sh stop
 * openoffice.py 可使用命令开启：nohup /home/ekoz/openoffice.py &
@@ -20,6 +20,29 @@
 
 ### scp_timer.py
 * 从远端服务器获取指定目录下的所有文件夹和文件，复制到本地指定的文件夹
+
+### jenkins
+	采用jenkins打包后生成的是war，jenkins本身是支持打包为zip并传送到发布服务器上的，但是用起来比较繁琐，而且不够灵活，当前脚本可以获取jenkins上的服务并发布到相应的服务器
+	
+* cp_jenkins.sh 
+```
+从jenkins获取相应的war包到当前目录，用法如下
+./cp_jenkins.sh your_war_name package_version_no
+```	
+* war_zip.sh
+```
+将 war 转成拥有顶级目录的zip包，用法如下
+./war_zip.sh your_war_name
+```	
+	
+* scp_rc.py
+```
+将 zip 包发布到指定的服务器，支持同时传输多个文件，用法如下
+./scp_rc.py your_zip_file0 your_zip_file1 your_zip_file2
+```
+
+### get_package.py
+	从发布地址拿安装包到本地目录
 
 ### archives.py
 	针对 git archive 增量包发布编译后的包
