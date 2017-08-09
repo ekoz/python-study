@@ -2,9 +2,15 @@
 #coding=utf-8
 #auther eko.zhan
 #date 2017-07-18 18:51
-#针对git增量包发布编译后的包
-#git archive -o hot-fix-201707181818.zip HEAD $(git diff c2b0b19...bfbd8fe --name-only)
-#python archives.py D:\Workspaces\kbaseui-std\hot-fix-201707181818.zip
+'''
+针对git增量包发布编译后的包
+add by ekozhan at 2017-08-09 13:54
+增加功能：打包时排除 WEB-INF/classes 下的properties 文件，properties 文件如果有增加配置，直接通知运维人员
+增加功能：META-INF下增加增量包时间戳
+命令如下
+git archive -o hot-fix-201707181818.zip HEAD $(git diff c2b0b19...bfbd8fe --name-only)
+python archives.py D:\Workspaces\kbaseui-std\hot-fix-201707181818.zip
+'''
 
 import zipfile
 import os
@@ -69,9 +75,9 @@ def kbsZipFile(filename):
                                 os.makedirs(my_target_dir)
                             except FileExistsError:
                                 pass
-                            shutil.copyfile(os.path.join(my_source_dir, my_filename), my_target_dir + '\\' + my_filename)
+                            shutil.copyfile(os.path.join(my_source_dir, my_filename), os.path.join(my_target_dir, my_filename))
                 #遍历 properties/xml 配置文件
-                elif filepath.startswith('src/main/resources/'):
+                elif filepath.startswith('src/main/resources/') and not filepath.endswith('.properties'):
                     my_dir = filepath[(len('src/main/resources/')) : filepath.rfind('/')+1]
                     my_filename = filepath[filepath.rfind('/')+1 : len(filepath)]
                     my_target_dir = os.path.join(target_dir, 'WEB-INF\\classes\\', my_dir)
@@ -92,6 +98,17 @@ def kbsZipFile(filename):
                     except FileExistsError:
                         pass
                     shutil.copyfile(os.path.join(my_source_dir, my_filename), os.path.join(my_target_dir, my_filename))
+
+        #增加增量包记录 META-INF 下加上时间戳
+        update_dir_path = os.path.join(target_dir, 'META-INF');
+        try:
+            os.makedirs(update_dir_path)
+        except FileExistsError:
+            pass
+        update_file_path = os.path.join(update_dir_path, time.strftime('%Y%m%d%H%M', time.localtime()) + '.txt')
+        with open(update_file_path, 'w') as update_file:
+            update_file.write('update by @ibotkbs at ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()))
+            update_file.write('\n')
 
         #将 target_dir 压缩
         zip_dir(target_dir, rootdir + ctx[0:len(ctx)-1] + '-' + time.strftime('%Y%m%d%H%M', time.localtime()) + '.part.zip')
