@@ -7,6 +7,7 @@
 add by ekozhan at 2017-08-09 13:54
 增加功能：打包时排除 WEB-INF/classes 下的properties 文件，properties 文件如果有增加配置，直接通知运维人员
 增加功能：META-INF下增加增量包时间戳
+FixMe 致命缺陷，无法增量打包依赖的jar 
 命令如下
 git archive -o hot-fix-201707181818.zip HEAD $(git diff c2b0b19...bfbd8fe --name-only)
 python archives.py D:\Workspaces\kbaseui-std\hot-fix-201707181818.zip
