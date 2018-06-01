@@ -46,3 +46,7 @@
 
 ### archives.py
 	针对 git archive 增量包发布编译后的包
+	
+### fileencoding.py
+  批量修改文件编码，效果如图所示
+  ![批量修改文件编码为utf-8效果图](DATAS/fileencoding.png)
