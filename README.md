@@ -54,3 +54,7 @@
 
 ### mcgov.py
 	爬取政府官网处理民众信访事项，将数据导入至solr容器进行查询
+	
+### tieba.py
+贴吧签到神器，大部分代码是从 [loavne/all-login](https://github.com/loavne/all-login) Copy，效果如下：
+![贴吧签到效果](DATAS/tieba-demo.png)
