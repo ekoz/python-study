@@ -13,8 +13,8 @@ from subprocess import Popen  # 打开图片
 home_url = 'https://www.baidu.com/'
 login_url = 'https://passport.baidu.com/v2/api/?login'
 mylike_url = 'https://tieba.baidu.com/f/like/mylike?&pn='
-sign_url = 'http://tieba.baidu.com/sign/add'
-
+sign_tieba_url = 'http://tieba.baidu.com/sign/add'
+sign_wenku_url = 'https://wenku.baidu.com/task/submit/signin'
 headers = {
     "Host": "passport.baidu.com",
     "Referer": "https://www.baidu.com/",
@@ -113,7 +113,7 @@ def tieba_sign():
                 'kw': name.encode('utf8'),       # 因为BS的内容为unicode
                 'tbs': tbs
                 }
-            resp = session.post(sign_url, data=postdata)
+            resp = session.post(sign_tieba_url, data=postdata)
             result = json.loads(resp.text)
             if result['no']==1101:
                 #已经签到过
@@ -126,6 +126,15 @@ def tieba_sign():
             else:
                 print(name+u'吧，签到异常，返回数据', resp.text)
             
+def wenku_sign():
+    headers_wenku = {
+        "Host": "wenku.baidu.com",
+        "Referer": "https://wenku.baidu.com/task/browse/daily",
+        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
+    }
+    resp = session.get(sign_wenku_url, headers=headers_wenku)
+    print(resp.text)
+    
 if __name__ == '__main__':
     #===================================================
     # 初始化 session
@@ -195,5 +204,10 @@ if __name__ == '__main__':
         # 保存cookies信息，以备下次直接访问首页
         session.cookies.save()
     #==========================================================
-    get_weather()
-    tieba_sign()
+    
+    while True:
+         print(time.strftime('%Y-%m-%d %H:%M', time.localtime()))
+         get_weather()
+         tieba_sign()
+         wenku_sign()
+         time.sleep(60*60*24)
