@@ -15,6 +15,7 @@ login_url = 'https://passport.baidu.com/v2/api/?login'
 mylike_url = 'https://tieba.baidu.com/f/like/mylike?&pn='
 sign_tieba_url = 'http://tieba.baidu.com/sign/add'
 sign_wenku_url = 'https://wenku.baidu.com/task/submit/signin'
+sign_zhidao_url = 'https://zhidao.baidu.com/ihome/api/signInfo'
 headers = {
     "Host": "passport.baidu.com",
     "Referer": "https://www.baidu.com/",
@@ -114,18 +115,22 @@ def tieba_sign():
                 'tbs': tbs
                 }
             resp = session.post(sign_tieba_url, data=postdata)
-            result = json.loads(resp.text)
-            if result['no']==1101:
-                #已经签到过
-                print(name + u'吧，' + result['error'])
-            elif result['no']==1010:
-                #抱歉，根据相关法律法规和政策，本吧暂不开放。
-                print(name + u'吧，' + result['error'])
-            elif result['no']==0:
-                print(name+u'吧，签到成功')
-            else:
-                print(name+u'吧，签到异常，返回数据', resp.text)
-            
+            try:
+                result = json.loads(resp.text)
+                if result['no']==1101:
+                    #已经签到过
+                    print(name + u'吧，' + result['error'])
+                elif result['no']==1010:
+                    #抱歉，根据相关法律法规和政策，本吧暂不开放。
+                    print(name + u'吧，' + result['error'])
+                elif result['no']==0:
+                    print(name+u'吧，签到成功')
+                else:
+                    print(name+u'吧，签到异常，返回数据', resp.text)
+            except:
+                print('返回数据解析异常: ', resp.text)
+
+
 def wenku_sign():
     headers_wenku = {
         "Host": "wenku.baidu.com",
@@ -134,11 +139,23 @@ def wenku_sign():
     }
     resp = session.get(sign_wenku_url, headers=headers_wenku)
     print(resp.text)
+
+
+def zhidao_sign():
+    headers_zhidao = {
+        "Host": "zhidao.baidu.com",
+        "Referer": "https://zhidao.baidu.com/",
+        "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.109 Safari/537.36"
+    }
+    tmp_url = sign_zhidao_url + '?t=' + time.time()
+    resp = session.get(tmp_url, headers=headers_zhidao)
+    print(resp.text)
     
+
 if __name__ == '__main__':
-    #===================================================
+    # ===================================================
     # 初始化 session
-    #===================================================
+    # ===================================================
     session = requests.Session()
     session.cookies = HC.LWPCookieJar(filename="BaiDuCookies")
     try:
@@ -203,11 +220,11 @@ if __name__ == '__main__':
             
         # 保存cookies信息，以备下次直接访问首页
         session.cookies.save()
-    #==========================================================
+    # ==========================================================
     
     while True:
-         print(time.strftime('%Y-%m-%d %H:%M', time.localtime()))
-         get_weather()
-         tieba_sign()
-         wenku_sign()
-         time.sleep(60*60*24)
+        print(time.strftime('%Y-%m-%d %H:%M', time.localtime()))
+        get_weather()
+        tieba_sign()
+        wenku_sign()
+        time.sleep(60*60*24)
