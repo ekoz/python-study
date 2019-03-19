@@ -17,7 +17,7 @@ from pymongo import MongoClient
 
 class ZXClient:
     def __init__(self):
-        self.connection_url = 'mongodb://localhost:27017/'
+        self.connection_url = 'mongodb://wsxdream:wsxdream@localhost:27017/?authSource=zxacc&authMechanism=SCRAM-SHA-1'
         self.db_name = 'zxacc'
         self.collection_name = 'article'
 
