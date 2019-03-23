@@ -60,17 +60,3 @@
 贴吧签到神器，大部分代码是从 [loavne/all-login](https://github.com/loavne/all-login) Copy，效果如下：
 
 ![贴吧签到效果](DATAS/tieba-demo.png)
-
-### db/sqlalchemy-demo.py
-sqlalchemy 操作数据库增删改查
-
-相关资料：
-
-[SQLAlchemy 1.3.1](https://pypi.org/project/SQLAlchemy/)
-
-[
-SQLAlchemy_定义(一对一/一对多/多对多)关系](https://blog.csdn.net/Jmilk/article/details/52445093)
-
-[廖雪峰-使用SQLAlchemy](https://www.liaoxuefeng.com/wiki/0014316089557264a6b348958f449949df42a6d3a2e542c000/0014320114981139589ac5f02944601ae22834e9c521415000)
-
-[Installing cx_Oracle on Windows](https://cx-oracle.readthedocs.io/en/latest/installation.html#installing-cx-oracle-on-windows)

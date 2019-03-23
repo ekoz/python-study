@@ -6,7 +6,7 @@ Created on Fri Jun  1 17:47:05 2018
 """
 import os
 
-basePath = 'D:\\Gitspaces\\wsxdream';
+basePath = 'D:\\Gitspaces\\wsxdream'
 
 def walk(path):
     if os.path.exists(path):
