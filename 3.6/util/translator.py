@@ -29,12 +29,13 @@ def transfer(js_path, lang='en'):
             # print(tmp.find("'"))
             # print(tmp)
             text = rstr[rstr.find("'")+1 : rstr.rfind("'")]
-            result = json.loads(translate(text, lang))
+
+            result = translate(text, lang)
             if lstr.find('\'')==-1:
                 lstr = '\'' + lstr.strip() + '\''
             else:
                 lstr = lstr.strip()
-            print(lstr + ' : \'' + result['translationResponse'] + '\',')
+            print(lstr + ' : \'' + result + '\',')
 
 
 def translate(text, lang='en'):
