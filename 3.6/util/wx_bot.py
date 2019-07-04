@@ -11,6 +11,7 @@
 @time: 2019/6/29 16:50
 @see https://github.com/LKI/chinese-calendar
 https://2.python-requests.org/en/master/
+nohup python -u wx_bot.py > wx_bot.out &
 """
 from chinese_calendar import is_workday
 import time
@@ -58,10 +59,10 @@ def send():
         if current_time == '09:00':
             # 发送消息，上班打卡
             post('各位，上班请别忘记打卡')
-        elif current_time == '10:00' and (day == 26 or day == 27 or day == 28):
+        elif current_time == '10:00' and (day == '26' or day == '27' or day == '28'):
             # 26、27、28 号上午 10 点提醒大家填写OA系统
             post('马上到月底了，请大家填写OA研发工作日志')
-        elif current_time == '13:30' and weekday == 4:
+        elif current_time == '13:30' and weekday == '4':
             # 周四下午需要大家填写周报
             post('请大家及时发送周报给组长')
         elif current_time == '18:20':
