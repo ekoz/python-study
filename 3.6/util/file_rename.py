@@ -24,15 +24,22 @@ def walk(path_list):
         # print(path)
         fs = os.listdir(path)
         for f in fs:
-            dt = time.localtime(int(f.split('.')[0]) / 1000)
-            dtstr = time.strftime('%Y%m%d%H%M%S', dt)
-            new_name = dtstr + '.' + f.split('.')[1]
             if f.find('-') == -1:
+                # 文件名以 mmexport 开头
+                if f.find('mmexport') == 0:
+                    dt = time.localtime(
+                        int(f[8:].split('.')[0]) / 1000)
+                else:
+                    dt = time.localtime(int(f.split('.')[0]) / 1000)
+                dtstr = time.strftime('%Y-%m-%d_%H.%M.%S', dt)
+                new_name = dtstr + '.' + f.split('.')[1]
+
                 old_path = path + '\\' + f
                 new_path = path + '\\' + new_name
                 if os.path.exists(new_path):
                     i = i + 1
-                    new_path = path + '\\' + dtstr + str(i) + '.' + f.split('.')[1]
+                    new_path = path + '\\' + dtstr + \
+                        str(i) + '.' + f.split('.')[1]
                 os.rename(old_path, new_path)
     else:
         print(path + ' is not directory.')
