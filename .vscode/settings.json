@@ -1,5 +1,16 @@
 {
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true
+  "editor.formatOnSave": true,
+  "python.autoComplete.addBrackets": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.pylintArgs": [
+    "--include-naming-hint=n",
+    "--disable=W0311",
+    "--disable=C0103",
+    "--disable=E1101"
+  ],
+  "python.linting.flake8Enabled": true,
+  "python.formatting.autopep8Args": ["--ignore=E402", "--max-line-length=200"],
+  "python.linting.enabled": true,
+  "python.pythonPath": "D:\\Programs\\Python\\Python37-32\\python.exe",
+  "python.linting.lintOnSave": false
 }

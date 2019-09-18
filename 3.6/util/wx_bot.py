@@ -76,4 +76,4 @@ def send():
 if __name__ == '__main__':
     while True:
         send()
-        time.sleep(59)
+        time.sleep(60)
