@@ -11,6 +11,7 @@
   "python.linting.flake8Enabled": true,
   "python.formatting.autopep8Args": ["--ignore=E402", "--max-line-length=200"],
   "python.linting.enabled": true,
-  "python.pythonPath": "D:\\Programs\\Python\\Python37-32\\python.exe",
-  "python.linting.lintOnSave": false
+  "python.pythonPath": "D:\\Programs\\Anaconda3\\envs\\python36\\python.exe",
+  "python.linting.lintOnSave": false,
+  "python.terminal.activateEnvironment": true
 }

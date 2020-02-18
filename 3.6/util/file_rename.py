@@ -33,8 +33,9 @@ def walk(path_list):
                 elif f.find('20') == 0:
                     # 文件名称是已 2019 或 2020 年月日开头，不作处理
                     continue
-                elif f.find('IMG_') == 0:
+                elif f.find('IMG_') == 0 or f.find('VID_') == 0:
                     # 手机拍照以 IMG_ 开头
+                    # 视频文件名以 VID_ 开头
                     new_name = f[4:]
                     old_path = path + '\\' + f
                     new_path = path + '\\' + new_name
