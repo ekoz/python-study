@@ -24,6 +24,7 @@ def walk(path_list):
         # print(path)
         fs = os.listdir(path)
         for f in fs:
+            # 文件名不包含 -
             if f.find("-") == -1:
                 # 文件名以 mmexport 开头
                 if f.find("mmexport") == 0:
@@ -40,12 +41,17 @@ def walk(path_list):
                     new_path = path + "\\" + new_name
                     os.rename(old_path, new_path)
                     continue
-                elif len(f) > 16:
-                    # 文件名不是时间戳
+                elif f.find("微信图片_") == 0:
+                    # 微信图片_转存以这四个字开头
+                    fmt_prefix(path, f, "微信图片_")
+                    continue
+                elif len(f) > 17:
+                    # 文件名不是时间戳，时间戳是13位，加上 .mp4 或者 .jpg 是 4 位
                     continue
                 else:
                     # 时间戳文件名
                     dt = time.localtime(int(f.split(".")[0]) / 1000)
+
                 dtstr = time.strftime("%Y-%m-%d_%H.%M.%S", dt)
                 new_name = dtstr + "." + f.split(".")[1]
 
