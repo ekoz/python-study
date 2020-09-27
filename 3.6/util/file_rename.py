@@ -45,12 +45,20 @@ def walk(path_list):
                     # 微信图片_转存以这四个字开头
                     fmt_prefix(path, f, "微信图片_")
                     continue
-                elif len(f) > 17:
-                    # 文件名不是时间戳，时间戳是13位，加上 .mp4 或者 .jpg 是 4 位
-                    continue
+                elif f.find("_DSC") == 0:
+                    # 单反相机拍摄出来的照片以 _DSC 开头，忘记了是佳能还是尼康。。
+                    # 实现方案：获取照片的创建日期和修改日期，取最小值，注意：修改日期不一定大于创建日期
+                    dt = time.localtime(fmt_prefix_by_ctime(path, f))
+                # elif len(f) > 17:
+                #     # 文件名不是时间戳，时间戳是13位，加上 .mp4 或者 .jpg 是 4 位
+                #     continue
                 else:
                     # 时间戳文件名
-                    dt = time.localtime(int(f.split(".")[0]) / 1000)
+                    try:
+                        dt = time.localtime(int(f.split(".")[0]) / 1000)
+                    except:
+                        # 当前文件名不是时间戳，根据日期来重命名
+                        dt = time.localtime(fmt_prefix_by_ctime(path, f))
 
                 dtstr = time.strftime("%Y-%m-%d_%H.%M.%S", dt)
                 new_name = dtstr + "." + f.split(".")[1]
@@ -67,6 +75,14 @@ def walk(path_list):
                 continue
     else:
         print(path + " is not directory.")
+
+
+def fmt_prefix_by_ctime(path, file_name):
+    # 根据文件的创建时间和修改时间，来重命名文件
+    file_path = path + "\\" + file_name
+    # os.path.getctime(file_path) 1601208283.1814914
+    # os.path.getmtime(file_path) 1601208283.1814914
+    return int(min(os.path.getctime(file_path), os.path.getmtime(file_path)))
 
 
 def fmt_prefix(path, file_name, prefix):
