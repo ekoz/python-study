@@ -29,7 +29,11 @@ def walk(path_list):
                 # 文件名以 mmexport 开头
                 if f.find("mmexport") == 0:
                     # 微信保存的图片已 mmexport 开头
-                    dt = time.localtime(int(f[8:].split(".")[0]) / 1000)
+                    try:
+                        dt = time.localtime(int(f[8:].split(".")[0]) / 1000)
+                    except:
+                        # 当前文件名不是时间戳，根据日期来重命名
+                        dt = time.localtime(fmt_prefix_by_ctime(path, f))
                 elif f.find("20") == 0:
                     # 文件名称是已 2019 或 2020 年月日开头，不作处理
                     continue
@@ -44,6 +48,8 @@ def walk(path_list):
                 elif f.find("微信图片_") == 0:
                     # 微信图片_转存以这四个字开头
                     fmt_prefix(path, f, "微信图片_")
+                    # 202106041453135
+                    # 2021-06-04_14.53.13.5
                     continue
                 elif f.find("_DSC") == 0:
                     # 单反相机拍摄出来的照片以 _DSC 开头，忘记了是佳能还是尼康。。
@@ -88,9 +94,32 @@ def fmt_prefix_by_ctime(path, file_name):
 def fmt_prefix(path, file_name, prefix):
     # 根据前缀格式化文件名，移除前缀，保留后面的文本
     new_name = file_name[len(prefix) :]
+    new_name = fmt_filename(new_name)
     old_path = path + "\\" + file_name
     new_path = path + "\\" + new_name
     os.rename(old_path, new_path)
+
+
+def fmt_filename(new_name):
+    # .jpg
+    extension = new_name[new_name.rfind('.'):]
+    # 20210604145
+    base_name = new_name[0:new_name.rfind('.')]
+    base_name = base_name.strip()
+    if len(base_name)>8:
+        new_base_name = base_name[0:4] + '-' + base_name[4:6] \
+                       + '-' + base_name[6:8] + '_' + join_str_with_dot(base_name[8:])
+    else:
+        new_base_name = base_name
+    return new_base_name + extension
+
+
+def join_str_with_dot(tmp_str):
+    tmp_arr = []
+    for n in range(len(tmp_str)):
+        if n % 2 == 0:
+            tmp_arr.append(tmp_str[n:n + 2])
+    return '.'.join(tmp_arr)
 
 
 class Main:
