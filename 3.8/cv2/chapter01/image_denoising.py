@@ -10,7 +10,7 @@ from skimage.util.dtype import convert
 # cv2.IMREAD_COLOR：读入一副彩色图像。图像的透明度会被忽略，这是默认参数。
 # cv2.IMREAD_GRAYSCALE：以灰度模式读入图像
 # cv2.IMREAD_UNCHANGED：读入一幅图像，并且包括图像的 alpha 通道
-img = cv2.imread("./data/dog-1.jpg", cv2.IMREAD_COLOR)
+img = cv2.imread("../data/dog-1.jpg", cv2.IMREAD_COLOR)
 cv2.imshow("dog", img)
 cv2.waitKey()
 
@@ -35,7 +35,7 @@ cv2.imshow("dog2", noise_img)
 
 # 方法2：用numpy生成噪声
 def add_noise(p_img):
-    p_img = np.multiply(p_img, 1. / 255, dtype=np.float64)
+    p_img = np.multiply(p_img, 1.0 / 255, dtype=np.float64)
     mean, var = 0, 0.01
     noise = np.random.normal(mean, var ** 0.5, p_img.shape)
     p_img = convert(p_img, np.floating)
@@ -58,7 +58,7 @@ cv2.imshow("dog31", gray_img)
 
 # 图像去噪
 # 方法1：用第三方工具去噪
-noise_img_dog = cv2.imread("./data/dog-1_noise.png")
+noise_img_dog = cv2.imread("../data/dog-1_noise.png")
 
 denoise_img1 = cv2.medianBlur(noise_img_dog, ksize=5)
 cv2.imshow("denoise_img1", denoise_img1)
@@ -94,6 +94,3 @@ def denoise(p_img, ksize):
 cv2.waitKey()
 
 cv2.destroyAllWindows()
-
-
-
