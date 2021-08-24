@@ -5,14 +5,14 @@ import cv2
 import numpy as np
 import skimage
 from skimage.util.dtype import convert
+from matplotlib import pyplot as plt
 
 # 阅读图像
 # cv2.IMREAD_COLOR：读入一副彩色图像。图像的透明度会被忽略，这是默认参数。
 # cv2.IMREAD_GRAYSCALE：以灰度模式读入图像
 # cv2.IMREAD_UNCHANGED：读入一幅图像，并且包括图像的 alpha 通道
 img = cv2.imread("../data/dog-1.jpg", cv2.IMREAD_COLOR)
-cv2.imshow("dog", img)
-cv2.waitKey()
+plt.subplot(231), plt.imshow(img)
 
 # 2.添加噪声
 # 方法1：用第三方工具添加噪声
@@ -29,8 +29,7 @@ cv2.waitKey()
 # - 'speckle'   Multiplicative noise using out = image + n*image, where
 #               n is Gaussian noise with specified mean & variance.
 noise_img = skimage.util.random_noise(img, mode="speckle")
-
-cv2.imshow("dog2", noise_img)
+plt.subplot(232), plt.imshow(noise_img)
 
 
 # 方法2：用numpy生成噪声
@@ -45,7 +44,7 @@ def add_noise(p_img):
 
 noise_img3 = add_noise(img).astype(np.float32)
 gray_img = cv2.cvtColor(noise_img3, cv2.COLOR_BGR2GRAY)
-cv2.imshow("dog3", noise_img3)
+plt.subplot(233), plt.imshow(noise_img3)
 # > Unsupported depth of input image:
 # >     'VDepth::contains(depth)'
 # > where
@@ -53,7 +52,7 @@ cv2.imshow("dog3", noise_img3)
 # https://stackoverflow.com/questions/55128386/python-opencv-depth-of-image-unsupported-cv-64f
 # https://blog.csdn.net/SpadgerZ/article/details/103297962
 # opencv只支持float32的图像显示和操作，然后float64是numpy的数据类型，opencv中不支持。改成np.float32即可
-cv2.imshow("dog31", gray_img)
+plt.subplot(234), plt.imshow(gray_img)
 
 
 # 图像去噪
@@ -61,10 +60,10 @@ cv2.imshow("dog31", gray_img)
 noise_img_dog = cv2.imread("../data/dog-1_noise.png")
 
 denoise_img1 = cv2.medianBlur(noise_img_dog, ksize=5)
-cv2.imshow("denoise_img1", denoise_img1)
+plt.subplot(235), plt.imshow(denoise_img1)
 
 denoise_img2 = cv2.fastNlMeansDenoising(noise_img_dog)
-cv2.imshow("denoise_img2", denoise_img2)
+plt.subplot(236), plt.imshow(denoise_img2)
 
 # denoise_img3 = cv2.GaussianBlur(noise_img_dog, ksize=3, sigmaX=(-1, 1))
 # cv2.imshow("denoise_img3", denoise_img3)
@@ -90,7 +89,4 @@ def denoise(p_img, ksize):
 
 # denoise_img4 = denoise(noise_img_dog, 1)
 # cv2.imshow("denoise_img4", denoise_img4)
-
-cv2.waitKey()
-
-cv2.destroyAllWindows()
+plt.show()
