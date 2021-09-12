@@ -9,3 +9,8 @@ from matplotlib import pyplot as plt
 # 灰度图 cv2.IMREAD_GRAYSCALE
 img = cv2.imread("../data/dog-1.jpg", cv2.IMREAD_GRAYSCALE)
 cv2.imwrite("../data/dog-gray.jpg", img)
+
+img_gray = cv2.imread("../data/dog-gray.jpg")
+cv2.imshow('gray', img_gray)
+cv2.waitKey()
+cv2.destroyAllWindows()

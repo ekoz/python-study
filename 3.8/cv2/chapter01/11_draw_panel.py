@@ -29,6 +29,7 @@ cv2.createTrackbar(switch, "image", 0, 1, nothing)
 while 1:
     cv2.imshow("image", img)
     k = cv2.waitKey(1) & 0xFF
+    # ESC
     if k == 27:
         break
 
