@@ -7,6 +7,7 @@
 @author: eko.zhan
 @contact: eko.z@hotmail.com
 @file: file_rename.py
+@use file_rename.py "your_dir_path" or file_rename.py "your_dir_path" 1
 @time: 2019/4/9 12:10
 """
 import sys
@@ -15,19 +16,29 @@ import time
 
 
 def walk(path_list):
-    # 遍历 path_list 的路径下的所有文件，将文件中是日期时间戳的文件名称改成yyyyMMddHHmmss这种格式
+    """
+    遍历 path_list 的路径下的所有文件，将文件中是日期时间戳的文件名称改成yyyyMMddHHmmss这种格式
+    :param path_list:
+    :return:
+    """
     i = 0
     if len(path_list) == 0:
         return
     path = path_list[0]
+    is_fmt_by_ctime = False
+    if len(path_list) == 2 and path_list[1] == "1":
+        # 参数强制采用 ctime 重命名
+        is_fmt_by_ctime = True
     if os.path.exists(path):
         # print(path)
         fs = os.listdir(path)
         for f in fs:
             # 文件名不包含 -
-            if f.find("-") == -1:
-                # 文件名以 mmexport 开头
-                if f.find("mmexport") == 0:
+            if f.find("-") == -1 or is_fmt_by_ctime:
+                if is_fmt_by_ctime:
+                    dt = time.localtime(fmt_prefix_by_ctime(path, f))
+                elif f.find("mmexport") == 0:
+                    # 文件名以 mmexport 开头
                     # 微信保存的图片已 mmexport 开头
                     try:
                         dt = time.localtime(int(f[8:].split(".")[0]) / 1000)
@@ -66,14 +77,14 @@ def walk(path_list):
                         # 当前文件名不是时间戳，根据日期来重命名
                         dt = time.localtime(fmt_prefix_by_ctime(path, f))
 
-                dtstr = time.strftime("%Y-%m-%d_%H.%M.%S", dt)
-                new_name = dtstr + "." + f.split(".")[1]
+                dt_str = time.strftime("%Y-%m-%d_%H.%M.%S", dt)
+                new_name = dt_str + "." + get_extension(f)
 
                 old_path = path + "\\" + f
                 new_path = path + "\\" + new_name
                 if os.path.exists(new_path):
                     i = i + 1
-                    new_path = path + "\\" + dtstr + str(i) + "." + f.split(".")[1]
+                    new_path = path + "\\" + dt_str + str(i) + "." + get_extension(f)
                 os.rename(old_path, new_path)
             elif f.find("Screenshot_") == 0:
                 # 手机截屏文件名前缀
@@ -84,7 +95,12 @@ def walk(path_list):
 
 
 def fmt_prefix_by_ctime(path, file_name):
-    # 根据文件的创建时间和修改时间，来重命名文件
+    """
+    根据文件的创建时间和修改时间，来重命名文件
+    :param path:
+    :param file_name:
+    :return:
+    """
     file_path = path + "\\" + file_name
     # os.path.getctime(file_path) 1601208283.1814914
     # os.path.getmtime(file_path) 1601208283.1814914
@@ -92,7 +108,13 @@ def fmt_prefix_by_ctime(path, file_name):
 
 
 def fmt_prefix(path, file_name, prefix):
-    # 根据前缀格式化文件名，移除前缀，保留后面的文本
+    """
+    根据前缀格式化文件名，移除前缀，保留后面的文本
+    :param path:
+    :param file_name:
+    :param prefix:
+    :return:
+    """
     new_name = file_name[len(prefix) :]
     new_name = fmt_filename(new_name)
     old_path = path + "\\" + file_name
@@ -101,25 +123,54 @@ def fmt_prefix(path, file_name, prefix):
 
 
 def fmt_filename(new_name):
+    """
+    重新包装文件名
+    :param new_name:
+    :return:
+    """
     # .jpg
-    extension = new_name[new_name.rfind('.'):]
+    extension = new_name[new_name.rfind(".") :]
     # 20210604145
-    base_name = new_name[0:new_name.rfind('.')]
+    base_name = new_name[0 : new_name.rfind(".")]
     base_name = base_name.strip()
-    if len(base_name)>8:
-        new_base_name = base_name[0:4] + '-' + base_name[4:6] \
-                       + '-' + base_name[6:8] + '_' + join_str_with_dot(base_name[8:])
+    if len(base_name) > 8:
+        new_base_name = (
+            base_name[0:4]
+            + "-"
+            + base_name[4:6]
+            + "-"
+            + base_name[6:8]
+            + "_"
+            + join_str_with_dot(base_name[8:])
+        )
     else:
         new_base_name = base_name
     return new_base_name + extension
 
 
 def join_str_with_dot(tmp_str):
+    """
+    用西文点 . 作为连接符连接字符串
+    :param tmp_str:
+    :return:
+    """
     tmp_arr = []
     for n in range(len(tmp_str)):
         if n % 2 == 0:
-            tmp_arr.append(tmp_str[n:n + 2])
-    return '.'.join(tmp_arr)
+            tmp_arr.append(tmp_str[n : n + 2])
+    return ".".join(tmp_arr)
+
+
+def get_extension(fname):
+    """
+    根据文件名获取后缀
+    :param fname: 2021--1-1-_30.-2.0-.59.-1.9-.17.2_.co.m..te.nc.en.t..mm.jpg or 16546275112.jpg
+    :return:
+    """
+    if fname.find(".") != -1:
+        return fname.rsplit(".", 1)[1]
+    else:
+        return fname
 
 
 class Main:
