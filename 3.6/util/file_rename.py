@@ -3,6 +3,14 @@
 
 """
 微信或QQ里保存的文件名称是时间戳，将时间戳重命名为日期开头的文件名
+1. 微信保存的图片名称以 mmexport 开头
+2. 手机拍照以 IMG_ 开头，IMG_20211017_175100.jpg
+3. 视频文件名以 VID_ 开头，VID_20211001_102301.mp4
+4. PC微信保存图片以 微信图片_ 开头
+5. 单反相机拍摄的照片以 _DSC 开头
+6. 其他类型建议按照文件创建时间或修改时间的最小值来重命名
+6.1. 20211114_142952.jpg
+
 @version: 1.0
 @author: eko.zhan
 @contact: eko.z@hotmail.com
@@ -10,31 +18,27 @@
 @use file_rename.py "your_dir_path" or file_rename.py "your_dir_path" 1
 @time: 2019/4/9 12:10
 """
-import sys
 import os
 import time
+import click
+import re
 
 
-def walk(path_list):
+def walk(dir_path, ctime_mode):
     """
-    遍历 path_list 的路径下的所有文件，将文件中是日期时间戳的文件名称改成yyyyMMddHHmmss这种格式
-    :param path_list:
+    遍历 dir_path 的路径下的所有文件，将文件中是日期时间戳的文件名称改成 yyyy-MM-dd_HH.mm.ss 这种格式
+    :param dir_path:
+    :param ctime_mode:
     :return:
     """
     i = 0
-    if len(path_list) == 0:
-        return
-    path = path_list[0]
-    is_fmt_by_ctime = False
-    if len(path_list) == 2 and path_list[1] == "1":
-        # 参数强制采用 ctime 重命名
-        is_fmt_by_ctime = True
+    path = dir_path
+    is_fmt_by_ctime = ctime_mode == 1
     if os.path.exists(path):
-        # print(path)
         fs = os.listdir(path)
         for f in fs:
-            # 文件名不包含 -
-            if f.find("-") == -1 or is_fmt_by_ctime:
+            # 文件名不包含 -，包含 - 一般都是已经处理好了的图片
+            if f.find("-") == -1 or match(f) or is_fmt_by_ctime:
                 if is_fmt_by_ctime:
                     dt = time.localtime(fmt_prefix_by_ctime(path, f))
                 elif f.find("mmexport") == 0:
@@ -46,15 +50,22 @@ def walk(path_list):
                         # 当前文件名不是时间戳，根据日期来重命名
                         dt = time.localtime(fmt_prefix_by_ctime(path, f))
                 elif f.find("20") == 0:
-                    # 文件名称是已 2019 或 2020 年月日开头，不作处理
+                    # 文件名称是已 2019 或 2020 年月日开头
+                    if match(f):
+                        # 处理 20211114_142952.jpg 的文件
+                        new_name = fmt_ymd(f)
+                        rename(path, f, new_name)
+                    elif match2(f):
+                        # 处理 20211114142952.jpg 的文件
+                        new_name = fmt_ymd2(f)
+                        rename(path, f, new_name)
                     continue
                 elif f.find("IMG_") == 0 or f.find("VID_") == 0:
                     # 手机拍照以 IMG_ 开头
                     # 视频文件名以 VID_ 开头
                     new_name = f[4:]
-                    old_path = path + "\\" + f
-                    new_path = path + "\\" + new_name
-                    os.rename(old_path, new_path)
+                    new_name = fmt_ymd(new_name)
+                    rename(path, f, new_name)
                     continue
                 elif f.find("微信图片_") == 0:
                     # 微信图片_转存以这四个字开头
@@ -141,14 +152,14 @@ def fmt_filename(new_name):
             + "-"
             + base_name[6:8]
             + "_"
-            + join_str_with_dot(base_name[8:])
+            + concat(base_name[8:])
         )
     else:
         new_base_name = base_name
     return new_base_name + extension
 
 
-def join_str_with_dot(tmp_str):
+def concat(tmp_str):
     """
     用西文点 . 作为连接符连接字符串
     :param tmp_str:
@@ -161,22 +172,129 @@ def join_str_with_dot(tmp_str):
     return ".".join(tmp_arr)
 
 
-def get_extension(fname):
+def get_extension(f_name):
     """
     根据文件名获取后缀
-    :param fname: 2021--1-1-_30.-2.0-.59.-1.9-.17.2_.co.m..te.nc.en.t..mm.jpg or 16546275112.jpg
+    :param f_name: 2021--1-1-_30.-2.0-.59.-1.9-.17.2_.co.m..te.nc.en.t..mm.jpg or 16546275112.jpg
     :return:
     """
-    if fname.find(".") != -1:
-        return fname.rsplit(".", 1)[1]
+    if f_name.find(".") != -1:
+        return f_name.rsplit(".", 1)[1]
     else:
-        return fname
+        return f_name
 
 
-class Main:
-    def __init__(self):
-        pass
+def match(f_name):
+    """
+    判断当前文件名格式是否是 20211114_142952.jpg 或 20211114-142952.jpg
+    :param f_name:
+    :return:
+    """
+    return re.match("^[0-9]{8}(_|-)[0-9]{6}.\S", f_name)
+
+
+def fmt_ymd(f_name):
+    """
+    如果当前文件名是 20211114_142952.jpg，那么整理成 2021-11-14_14.29.52.jpg
+    :param f_name:
+    :return:
+    """
+    if match(f_name):
+        # .jpg
+        extension = f_name[f_name.rfind(".") :]
+        # 20210604145
+        base_name = f_name[0 : f_name.rfind(".")]
+        base_name = base_name.strip()
+        new_base_name = (
+            base_name[0:4]
+            + "-"
+            + base_name[4:6]
+            + "-"
+            + base_name[6:8]
+            + "_"
+            + concat(base_name[9:])
+        )
+        return new_base_name + extension
+    else:
+        return f_name
+
+
+def match2(f_name):
+    """
+    判断当前文件名格式是否是 20200119124914.jpg
+    :param f_name:
+    :return:
+    """
+    return re.match("^([0-9]{10}|[0-9]{12}|[0-9]{14})\.\S", f_name)
+
+
+def fmt_ymd2(f_name):
+    """
+    如果当前文件名是 20200119124914.jpg，那么整理成 2021-11-14_14.29.52.jpg
+    :param f_name:
+    :return:
+    """
+    if match2(f_name):
+        # .jpg
+        extension = f_name[f_name.rfind(".") :]
+        # 20200119124914
+        base_name = f_name[0 : f_name.rfind(".")]
+        base_name = base_name.strip()
+        new_base_name = (
+            base_name[0:4]
+            + "-"
+            + base_name[4:6]
+            + "-"
+            + base_name[6:8]
+            + "_"
+            + concat(base_name[8:])
+        )
+        return new_base_name + extension
+    else:
+        return f_name
+
+
+def rename(path, old_name, new_name):
+    """
+    相同路径下的文件重命名
+    :param path:
+    :param old_name:
+    :param new_name:
+    :return:
+    """
+    old_path = path + "\\" + old_name
+    new_path = path + "\\" + new_name
+    os.rename(old_path, new_path)
+
+
+@click.command()
+@click.option(
+    "--dir_path",
+    prompt="请输入待整理的磁盘路径，如：D:/Pictures/秋宝宝",
+    help="输入待整理的磁盘路径，如：D:/Pictures/秋宝宝",
+    required=True,
+    type=click.Path(exists=True),
+)
+@click.option(
+    "--ctime_mode",
+    required=False,
+    default=0,
+    prompt="是否强制按文件时间戳转换，1-是，否-0，默认为否",
+    help="是否强制按文件时间戳转换，1-是，否-0，默认为否",
+)
+def click_walk(dir_path, ctime_mode):
+    click.echo(f"\n当前待扫描的磁盘路径是 {dir_path} ")
+    if ctime_mode == 0:
+        click.echo("本次扫描不强制按文件时间戳转换\n")
+    else:
+        click.echo("本次扫描按文件时间戳转换\n")
+
+    if os.path.exists(dir_path):
+        walk(dir_path, ctime_mode)
+        click.echo("扫描结束\n")
+    else:
+        click.echo(f"{dir_path} 路径不存在，请重新输入")
 
 
 if __name__ == "__main__":
-    walk(sys.argv[1:])
+    click_walk()
