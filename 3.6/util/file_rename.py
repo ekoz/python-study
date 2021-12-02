@@ -24,10 +24,11 @@ import click
 import re
 
 
-def walk(dir_path, ctime_mode):
+def walk(dir_path, subdir, ctime_mode):
     """
     遍历 dir_path 的路径下的所有文件，将文件中是日期时间戳的文件名称改成 yyyy-MM-dd_HH.mm.ss 这种格式
     :param dir_path:
+    :param subdir:
     :param ctime_mode:
     :return:
     """
@@ -37,6 +38,11 @@ def walk(dir_path, ctime_mode):
     if os.path.exists(path):
         fs = os.listdir(path)
         for f in fs:
+            if os.path.isdir(path + "\\" + f):
+                if subdir == 1:
+                    # 包含子目录，进入下级目录处理
+                    walk(path + "\\" + f, subdir, ctime_mode)
+                continue
             # 文件名不包含 -，包含 - 一般都是已经处理好了的图片
             if f.find("-") == -1 or match(f) or is_fmt_by_ctime:
                 if is_fmt_by_ctime:
@@ -276,21 +282,36 @@ def rename(path, old_name, new_name):
     type=click.Path(exists=True),
 )
 @click.option(
+    "--subdir",
+    required=False,
+    default="0",
+    prompt="是否包含子目录，1-是，否-0，默认为否",
+    help="是否包含子目录，1-是，否-0，默认为否",
+    type=click.Choice(["1", "0", ""]),
+)
+@click.option(
     "--ctime_mode",
     required=False,
-    default=0,
+    default="0",
     prompt="是否强制按文件时间戳转换，1-是，否-0，默认为否",
     help="是否强制按文件时间戳转换，1-是，否-0，默认为否",
+    type=click.Choice(["1", "0", ""]),
 )
-def click_walk(dir_path, ctime_mode):
+def click_walk(dir_path, subdir, ctime_mode):
     click.echo(f"\n当前待扫描的磁盘路径是 {dir_path} ")
-    if ctime_mode == 0:
-        click.echo("本次扫描不强制按文件时间戳转换\n")
+
+    if int(subdir) == 0:
+        click.echo("本次扫描不包含子目录")
     else:
-        click.echo("本次扫描按文件时间戳转换\n")
+        click.echo("本次扫描包含子目录")
+
+    if int(ctime_mode) == 0:
+        click.echo("本次扫描不强制按文件时间戳转换")
+    else:
+        click.echo("本次扫描按文件时间戳转换")
 
     if os.path.exists(dir_path):
-        walk(dir_path, ctime_mode)
+        walk(dir_path, int(subdir), int(ctime_mode))
         click.echo("扫描结束\n")
     else:
         click.echo(f"{dir_path} 路径不存在，请重新输入")
