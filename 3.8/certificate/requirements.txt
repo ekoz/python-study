@@ -1,5 +1,5 @@
 opencv-python==4.4.0.44
 numpy==1.21.0
-Pillow==9.0.0
+Pillow==9.0.1
 xlrd==1.2.0
 configparser==5.0.1
