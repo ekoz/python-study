@@ -43,6 +43,13 @@ def walk(dir_path, subdir, ctime_mode):
                     # 包含子目录，进入下级目录处理
                     walk(path + "\\" + f, subdir, ctime_mode)
                 continue
+
+            # 判断当前文件大小，如果小于8kb，说明是微信缩略图，可以忽略不计，将文件名修改为以 thumbnail_ 的前缀，后续手动检查后删除
+            if os.path.getsize(path + "\\" + f) < 8 * 1024:
+                new_name = "thumbnail_" + f
+                rename(path, f, new_name)
+                continue
+
             # 文件名不包含 -，包含 - 一般都是已经处理好了的图片
             if f.find("-") == -1 or match(f) or is_fmt_by_ctime:
                 if is_fmt_by_ctime:
