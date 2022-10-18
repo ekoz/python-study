@@ -10,6 +10,10 @@
 5. 单反相机拍摄的照片以 _DSC 开头
 6. 其他类型建议按照文件创建时间或修改时间的最小值来重命名
 6.1. 20211114_142952.jpg
+微信导出视频或照片的文件命名如下：
+2208021113219157.jpg
+2208021039530056chatroom.jpg
+这类文件的时间戳是导出时间，需要根据文件名转换成日期文件名
 
 @version: 1.0
 @author: eko.zhan
@@ -28,12 +32,13 @@ def walk(dir_path, subdir, ctime_mode):
     """
     遍历 dir_path 的路径下的所有文件，将文件中是日期时间戳的文件名称改成 yyyy-MM-dd_HH.mm.ss 这种格式
     :param dir_path:
-    :param subdir:
-    :param ctime_mode:
+    :param subdir: 1-包含子目录
+    :param ctime_mode: 1-本次扫描按文件时间戳转换；0-否
     :return:
     """
     i = 0
     path = dir_path
+    # 强制按文件时间戳转换
     is_fmt_by_ctime = ctime_mode == 1
     if os.path.exists(path):
         fs = os.listdir(path)
@@ -72,6 +77,11 @@ def walk(dir_path, subdir, ctime_mode):
                         # 处理 20211114142952.jpg 的文件
                         new_name = fmt_ymd2(f)
                         rename(path, f, new_name)
+                    continue
+                elif f.rfind("chatroom.jpg") != -1:
+                    # 处理 2208021039530056chatroom.jpg 的文件
+                    new_name = fmt_ymd3(f)
+                    rename(path, f, new_name)
                     continue
                 elif f.find("IMG_") == 0 or f.find("VID_") == 0:
                     # 手机拍照以 IMG_ 开头
@@ -265,6 +275,18 @@ def fmt_ymd2(f_name):
         return new_base_name + extension
     else:
         return f_name
+
+
+def fmt_ymd3(f_name):
+    """
+    如果当前文件名是 2208021039530056chatroom.jpg，那么整理成 2022-08-02_10.39.53.0056.jpg
+    :param f_name:
+    :return:
+    """
+    # .jpg
+    extension = f_name[f_name.rfind(".") :]
+    f_name = "20" + f_name[0 : f_name.find("chatroom.jpg") - 4] + extension
+    return fmt_ymd2(f_name)
 
 
 def rename(path, old_name, new_name):
