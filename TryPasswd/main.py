@@ -23,7 +23,7 @@ for i in range(99999):
     elif rar_filename.endswith('.zip'):
         with pyzipper.AESZipFile(rar_filename, 'r') as zf:
             try:
-                zf.extractall(path='./zip', pwd=bytes(str(passwd), 'utf-8'))
+                zf.extractall(path='zip', pwd=bytes(str(passwd), 'utf-8'))
                 print("Extracted successfully with password: ", passwd)
             except zlib.error as e:
                 print("Extracted successfully with password: ", passwd)
