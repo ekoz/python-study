@@ -6,7 +6,7 @@
 #build_no : your build number
 #eg: ./cp_jenkins.sh kbase-core 21
 #[description]
-#copy .war file in jenkins directory to /home/eko.zhan
+#copy .war file in JenkinsPlugin directory to /home/eko.zhan
 
 project_name=$1
 build_no=$2

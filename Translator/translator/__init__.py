@@ -5,7 +5,7 @@
 @version: 1.0
 @author: eko.zhan
 @contact: eko.z@hotmail.com
-@file: __init__.py.py
+@file: __init__.py
 @time: 2019/4/28 16:56
 """
 __version__ = "0.1"

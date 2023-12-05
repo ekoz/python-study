@@ -7,6 +7,7 @@
 #eg : ./get_package.py kbase-core.zip kbaseui-std.zip
 #[description]
 #scp .zip file from release server.
+#python2.7
 
 
 import paramiko

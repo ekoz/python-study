@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #coding=utf-8
+#python2.7
 
 import os
 import socket

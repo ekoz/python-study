@@ -16,7 +16,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time
 import os
 
-dir_base = "D:/Megvii/Images/imgs/1/"
+dir_base = "D:/Images/imgs/1/"
 if not os.path.isdir(dir_base):
     os.mkdir(dir_base)
 

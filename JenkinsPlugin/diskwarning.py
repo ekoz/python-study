@@ -2,6 +2,7 @@
 #coding=utf-8
 #author eko.zhan
 #date 2015-12-11 10:00
+#python2.7
 
 import os
 import time
