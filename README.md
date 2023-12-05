@@ -51,7 +51,7 @@
 ### fileencoding.py
   批量修改文件编码，效果如图所示
   
-  ![批量修改文件编码为utf-8效果图](DATAS/fileencoding.png)
+  ![批量修改文件编码为utf-8效果图](assets/fileencoding.png)
 
 ### mcgov.py
 	爬取政府官网处理民众信访事项，将数据导入至solr容器进行查询
@@ -59,4 +59,4 @@
 ### tieba.py
 贴吧签到神器，大部分代码是从 [loavne/all-login](https://github.com/loavne/all-login) Copy，效果如下：
 
-![贴吧签到效果](DATAS/tieba-demo.png)
+![贴吧签到效果](assets/tieba-demo.png)

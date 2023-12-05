@@ -3,6 +3,8 @@
 Created on Mon Aug 27 12:48:13 2018
 
 @author: eko.zhan
+
+讲大麻城官网的公众互动，来信选登内容同步至solr，方便分词搜索
 """
 
 import requests
