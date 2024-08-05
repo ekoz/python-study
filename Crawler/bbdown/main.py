@@ -15,6 +15,7 @@ config.read("config.ini", encoding="utf-8")
 ddown_path = config["DEFAULT"]["ddown_path"]
 
 robot_cookie = config["DEFAULT"]["cookie"]
+only_audio = config["DEFAULT"]["only_audio"]
 
 # 请输入你要下载的b站视频的 bvid，即 https://www.bilibili.com/video/BV1nx4y1471s/ 中的 BV1nx4y1471s 这部分
 bvid = config["DEFAULT"]["bvid"]
@@ -37,7 +38,7 @@ resp = requests.get(
 
 # print(resp.text)
 
-if resp.json()["data"]["View"].get("ugc_season") is None:
+if only_audio == "1" or resp.json()["data"]["View"].get("ugc_season") is None:
     # 该链接是单个视频，下载该文件即可
     url_video = f"https://www.bilibili.com/video/{bvid}"
     return_code = subprocess.call([ddown_path, url_video, "--audio-only"], shell=True)
