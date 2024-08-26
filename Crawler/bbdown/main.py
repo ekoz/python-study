@@ -15,6 +15,7 @@ config.read("config.ini", encoding="utf-8")
 ddown_path = config["DEFAULT"]["ddown_path"]
 
 robot_cookie = config["DEFAULT"]["cookie"]
+# 只下载当前视频，不考虑分p列表
 only_audio = config["DEFAULT"]["only_audio"]
 
 # 请输入你要下载的b站视频的 bvid，即 https://www.bilibili.com/video/BV1nx4y1471s/ 中的 BV1nx4y1471s 这部分
@@ -38,11 +39,32 @@ resp = requests.get(
 
 # print(resp.text)
 
-if only_audio == "1" or resp.json()["data"]["View"].get("ugc_season") is None:
+if only_audio == "1":
     # 该链接是单个视频，下载该文件即可
     url_video = f"https://www.bilibili.com/video/{bvid}"
-    return_code = subprocess.call([ddown_path, url_video, "--audio-only"], shell=True)
+    return_code = subprocess.call(
+        [ddown_path, url_video, "--audio-only", "-p", "1"], shell=True
+    )
     print(f"下载 {url_video}，获取结果 {return_code}")
+elif resp.json()["data"]["View"].get("ugc_season") is None:
+    # 该链接存在分p合集，直接下载合集
+    pages = resp.json()["data"]["View"].get("pages")
+    if pages is not None:
+        # for p in pages:
+        #     page_id = p["page"]
+        #     url_video = f"https://www.bilibili.com/video/{bvid}/?p={page_id}"
+        #     return_code = subprocess.call(
+        #         [ddown_path, url_video, "--audio-only", "--work-dir"],
+        #         shell=True,
+        #     )
+        #     print(f"下载 {url_video}，获取结果 {return_code}")
+        # 分p自动下载
+        url_video = f"https://www.bilibili.com/video/{bvid}"
+        return_code = subprocess.call(
+            [ddown_path, url_video, "--audio-only"],
+            shell=True,
+        )
+        print(f"下载 {url_video}，获取结果 {return_code}")
 else:
     # 该链接存在合集，直接下载合集
     sections = resp.json()["data"]["View"]["ugc_season"]["sections"]
