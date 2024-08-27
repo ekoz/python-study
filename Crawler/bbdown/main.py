@@ -47,17 +47,9 @@ if only_audio == "1":
     )
     print(f"下载 {url_video}，获取结果 {return_code}")
 elif resp.json()["data"]["View"].get("ugc_season") is None:
-    # 该链接存在分p合集，直接下载合集
+    # 该链接存在分p合集，直接下载合集，测试用例：https://www.bilibili.com/video/BV1dE4m1R7di
     pages = resp.json()["data"]["View"].get("pages")
     if pages is not None:
-        # for p in pages:
-        #     page_id = p["page"]
-        #     url_video = f"https://www.bilibili.com/video/{bvid}/?p={page_id}"
-        #     return_code = subprocess.call(
-        #         [ddown_path, url_video, "--audio-only", "--work-dir"],
-        #         shell=True,
-        #     )
-        #     print(f"下载 {url_video}，获取结果 {return_code}")
         # 分p自动下载
         url_video = f"https://www.bilibili.com/video/{bvid}"
         return_code = subprocess.call(
@@ -66,7 +58,7 @@ elif resp.json()["data"]["View"].get("ugc_season") is None:
         )
         print(f"下载 {url_video}，获取结果 {return_code}")
 else:
-    # 该链接存在合集，直接下载合集
+    # 该链接存在合集，直接下载合集，测试用例：https://www.bilibili.com/video/BV19E4m1X7jD
     sections = resp.json()["data"]["View"]["ugc_season"]["sections"]
     sections_title = resp.json()["data"]["View"]["ugc_season"]["title"]
 
