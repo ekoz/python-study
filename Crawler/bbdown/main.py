@@ -16,7 +16,7 @@ ddown_path = config["DEFAULT"]["ddown_path"]
 
 robot_cookie = config["DEFAULT"]["cookie"]
 # 只下载当前视频，不考虑分p列表
-only_audio = config["DEFAULT"]["only_audio"]
+only_current = config["DEFAULT"]["only_current"]
 
 # 请输入你要下载的b站视频的 bvid，即 https://www.bilibili.com/video/BV1nx4y1471s/ 中的 BV1nx4y1471s 这部分
 bvid = config["DEFAULT"]["bvid"]
@@ -39,7 +39,7 @@ resp = requests.get(
 
 # print(resp.text)
 
-if only_audio == "1":
+if only_current == "1":
     # 该链接是单个视频，下载该文件即可
     url_video = f"https://www.bilibili.com/video/{bvid}"
     return_code = subprocess.call(
