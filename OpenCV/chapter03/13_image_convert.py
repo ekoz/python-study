@@ -2,7 +2,7 @@
 # @author   :   eko.zhan
 # @time     :   2024/10/14 16:16
 
-from PIL import Image
+from PIL import Image, ImageEnhance
 import numpy as np
 import cv2
 
@@ -11,7 +11,12 @@ import cv2
 def convert_to_black_and_white(image_path):
     with Image.open(image_path) as image:
         image = image.convert("L")
-        image.save(image_path + "_out.jpg")
+        # 创建一个对比度增强器
+        enhancer = ImageEnhance.Contrast(image)
+
+        # 应用对比度增强
+        img_enhanced = enhancer.enhance(1.5)
+        img_enhanced.save(image_path + "_out.jpg")
 
 
 # 降噪
@@ -24,4 +29,4 @@ def denoise(image_path):
     cv2.imwrite(image_path + "_denoised_image.jpg", denoised_img)
 
 
-convert_to_black_and_white("../data/202410171548-shuxue.jpeg")
+convert_to_black_and_white("../data/222.jpeg")
