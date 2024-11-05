@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 
 # 读取图片
-image_path = '../data/202410171608.jpg'
+image_path = "../data/202410171608.jpg"
 image = cv2.imread(image_path)
 
 
@@ -32,10 +32,10 @@ image_contrasted = increase_contrast(image, 1.2)
 # image_lines_blackened = enhance_lines(image_contrasted)
 
 # 显示图片
-cv2.imshow('Original', image)
-cv2.imshow('Contrasted', image_contrasted)
+cv2.imshow("Original", image)
+cv2.imshow("Contrasted", image_contrasted)
 # cv2.imshow('Lines Blackened', image_lines_blackened)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-cv2.imwrite(image_path + '_image_contrasted.jpg', image_contrasted)
+cv2.imwrite(image_path + "_image_contrasted.jpg", image_contrasted)
