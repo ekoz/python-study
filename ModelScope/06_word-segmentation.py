@@ -1,8 +1,8 @@
 from modelscope.pipelines import pipeline
 
-word_segmentation = pipeline('word-segmentation')
+word_segmentation = pipeline("word-segmentation")
 
-inputs = ['今天天气不错，适合出去游玩','这本书很好，建议你看看']
+inputs = ["今天天气不错，适合出去游玩", "这本书很好，建议你看看"]
 print(word_segmentation(inputs))
 
 # 输出

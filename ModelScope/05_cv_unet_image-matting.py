@@ -18,10 +18,14 @@ from modelscope.pipelines import pipeline
 # C:/Users/zhanzhao/.cache/modelscope/hub/damo/cv_unet_image-matting
 # print(model_path)
 
-model_path_offline = 'C:/Users/zhanzhao/.cache/modelscope/hub/damo/cv_unet_image-matting'
-model_path = 'damo/cv_unet_image-matting'
+model_path_offline = (
+    "C:/Users/zhanzhao/.cache/modelscope/hub/damo/cv_unet_image-matting"
+)
+model_path = "damo/cv_unet_image-matting"
 
 portrait_matting = pipeline(Tasks.portrait_matting, model=model_path)
-result = portrait_matting('https://modelscope.oss-cn-beijing.aliyuncs.com/test/images/image_matting.png')
+result = portrait_matting(
+    "https://modelscope.oss-cn-beijing.aliyuncs.com/test/images/image_matting.png"
+)
 
-cv2.imwrite('./output/05_result.png', result[OutputKeys.OUTPUT_IMG])
+cv2.imwrite("data/output/05_result.png", result[OutputKeys.OUTPUT_IMG])
