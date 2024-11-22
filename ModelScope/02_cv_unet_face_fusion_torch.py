@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# @author   :   eko.zhan
+# @time     :   2024/11/20 18:25
+# 人脸融合模型Pytorch，给定一张模板图和一张目标用户图，图像人脸融合模型能够自动地将用户图中的人脸融合到模板人脸图像中，
+# 生成一张与目标人脸相似，且具有模版图外貌特征的新图像。
+# https://modelscope.cn/models/iic/cv_unet_face_fusion_torch
+
 import cv2
 from modelscope.outputs import OutputKeys
 from modelscope.pipelines import pipeline

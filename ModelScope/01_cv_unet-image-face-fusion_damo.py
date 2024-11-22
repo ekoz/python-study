@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @author   :   eko.zhan
+# @time     :   2024/11/20 18:25
+# 人像修复，输入一张包含人像的图像，算法会对图像中的每一个检测到的人像做修复和增强，
+# 对图像中的非人像区域采用RealESRNet做两倍的超分辨率，最终返回修复后的完整图像。
 # https://modelscope.cn/models/iic/cv_unet-image-face-fusion_damo
 
 import cv2
@@ -19,8 +24,8 @@ image_face_fusion = pipeline(
     Tasks.image_face_fusion, model=model_path_offline, device="cpu"
 )
 
-template_path = "data/assets/facefusion_template.jpg"
-user_path = "data/assets/facefusion_user.jpg"
+template_path = "data/assets/01_facefusion_template.jpg"
+user_path = "data/assets/01_facefusion_user.jpg"
 result = image_face_fusion(dict(template=template_path, user=user_path))
 
 cv2.imwrite(
