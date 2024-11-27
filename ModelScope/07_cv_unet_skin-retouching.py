@@ -16,8 +16,8 @@ model_path_offline = (
 )
 model_path = "damo/cv_unet_skin-retouching"
 
-skin_retouching = pipeline(Tasks.skin_retouching, model=model_path_offline)
-result = skin_retouching("./data/assets/20241120182503.jpg")
+skin_retouching = pipeline(Tasks.skin_retouching, model=model_path)
+result = skin_retouching("./data/assets/skin_retouching_examples.jpg")
 cv2.imwrite(
     "data/output/07_result_{}.png".format(time.time()), result[OutputKeys.OUTPUT_IMG]
 )

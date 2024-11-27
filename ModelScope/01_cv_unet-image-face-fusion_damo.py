@@ -21,7 +21,7 @@ model_path_offline = (
 model_path = "damo/cv_unet-image-face-fusion_damo"
 
 image_face_fusion = pipeline(
-    Tasks.image_face_fusion, model=model_path_offline, device="cpu"
+    Tasks.image_face_fusion, model=model_path, device="cpu"
 )
 
 template_path = "data/assets/01_facefusion_template.jpg"

@@ -17,7 +17,7 @@ model_path = "damo/cv_gpen_image-portrait-enhancement"
 
 
 portrait_enhancement = pipeline(
-    Tasks.image_portrait_enhancement, model=model_path_offline
+    Tasks.image_portrait_enhancement, model=model_path
 )
 result = portrait_enhancement("data/assets/07_result.png_1.png")
 cv2.imwrite(
