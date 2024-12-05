@@ -18,9 +18,9 @@ logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
-folder_path = '目标目录路径，如：D:\\Images'
-folder_path = 'D:\\Ekoz\\Images\\2024-11-10 待冲洗\\1\\1'
-model_base_path = 'C:\\Users\\ekozhan\\.cache\\modelscope\\hub'
+folder_path = "目标目录路径，如：D:\\Images"
+folder_path = "D:\\Images\\imgs"
+model_base_path = "C:\\Users\\zhanzhao\\.cache\\modelscope\\hub"
 
 target_path = os.path.join(folder_path, datetime.now().strftime("%Y%m%d%H%M%S"))
 
@@ -28,15 +28,22 @@ if not os.path.exists(target_path):
     os.mkdir(target_path)
 
 # 人像抠图 pipeline
-portrait_matting = pipeline(Tasks.portrait_matting, model=os.path.join(model_base_path, "damo/cv_unet_image-matting"))
+portrait_matting = pipeline(
+    Tasks.portrait_matting,
+    model=os.path.join(model_base_path, "damo/cv_unet_image-matting"),
+)
 
 # 人像增强 pipeline
 portrait_enhancement = pipeline(
-    Tasks.image_portrait_enhancement, model=os.path.join(model_base_path, "damo/cv_gpen_image-portrait-enhancement")
+    Tasks.image_portrait_enhancement,
+    model=os.path.join(model_base_path, "damo/cv_gpen_image-portrait-enhancement"),
 )
 
 # 人像美肤 pipeline
-skin_retouching = pipeline(Tasks.skin_retouching, model=os.path.join(model_base_path, "damo/cv_unet_skin-retouching"))
+skin_retouching = pipeline(
+    Tasks.skin_retouching,
+    model=os.path.join(model_base_path, "damo/cv_unet_skin-retouching"),
+)
 
 for img_path in os.listdir(folder_path):
     full_path = os.path.join(folder_path, img_path)
@@ -46,9 +53,13 @@ for img_path in os.listdir(folder_path):
         # 1. 进行人像增强
         image_enhancement_result = portrait_enhancement(full_path)
         # 2. 进行人像美肤
-        image_skin_result = skin_retouching(image_enhancement_result[OutputKeys.OUTPUT_IMG])
+        image_skin_result = skin_retouching(
+            image_enhancement_result[OutputKeys.OUTPUT_IMG]
+        )
         # 3. 抠出人像
-        image_matting_result = portrait_matting(image_skin_result[OutputKeys.OUTPUT_IMG])
+        image_matting_result = portrait_matting(
+            image_skin_result[OutputKeys.OUTPUT_IMG]
+        )
 
         cv2.imwrite(result_img_path, image_matting_result[OutputKeys.OUTPUT_IMG])
 
