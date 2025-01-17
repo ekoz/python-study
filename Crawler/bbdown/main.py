@@ -53,7 +53,8 @@ elif resp.json()["data"]["View"].get("ugc_season") is None:
         # 分p自动下载
         url_video = f"https://www.bilibili.com/video/{bvid}"
         return_code = subprocess.call(
-            [ddown_path, url_video, "--audio-only"],
+            # [ddown_path, url_video, "--audio-only", "--debug"],
+            [ddown_path, url_video, "--audio-only", "-c", "SESSDATA="+robot_cookie],
             shell=True,
         )
         print(f"下载 {url_video}，获取结果 {return_code}")
