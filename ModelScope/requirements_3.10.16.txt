@@ -1,0 +1,29 @@
+# python version 3.10.16
+
+# modelscope-registry.cn-hangzhou.cr.aliyuncs.com/modelscope-repo/modelscope:ubuntu22.04-
+# cuda12.1.0-py310-torch2.3.1-tf2.16.1-1.22.2
+
+# https://www.python.org/doc/versions/
+
+# https://www.tensorflow.org/versions
+# https://www.tensorflow.org/install/pip?hl=zh-cn
+# pip install --upgrade tensorflow==2.16.1
+
+# https://pytorch.org/get-started/previous-versions/
+# conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.4 -c pytorch -c nvidia
+# pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+
+# python -m pip install --upgrade pip
+
+torch==2.3.1
+torchaudio==2.3.1
+torchvision==0.18.1
+tensorflow==2.16.1
+modelscope==1.22.2
+transformers==4.33.0
+tokenizers==0.13.3
+numpy==1.24.0
+datasets==2.18.0
+opencv_contrib_python==4.8.0.76
+opencv_python==4.8.0.76
+python-dotenv==1.0.1

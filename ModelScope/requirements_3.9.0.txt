@@ -1,3 +1,4 @@
+# python version 3.9.0
 modelscope==1.9.5
 opencv_contrib_python==4.6.0.66
 opencv_python==4.6.0.66
@@ -10,3 +11,6 @@ torchaudio==2.0.2
 torchvision==0.15.2
 invisible_watermark==0.1.5
 diffusers==0.31.0
+OpenAI==1.30.0
+gradio==4.7.0
+bcrypt==4.2.1
