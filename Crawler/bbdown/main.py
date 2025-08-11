@@ -46,8 +46,10 @@ if only_current == "1":
         [ddown_path, url_video, "--audio-only", "-p", "1"], shell=True
     )
     print(f"下载 {url_video}，获取结果 {return_code}")
-elif resp.json()["data"]["View"].get("ugc_season") is None:
+elif (resp.json()["data"]["View"].get("ugc_season") is None or
+      (resp.json()["data"]["View"].get("ugc_season") is not None and resp.json()["data"]["View"].get("pages") is not None)):
     # 该链接存在分p合集，直接下载合集，测试用例：https://www.bilibili.com/video/BV1dE4m1R7di
+    # 如果 ugc_season 为空，或者 ugc_season 和 pages 同时不为空，此时，只下载 pages 里面的音乐
     pages = resp.json()["data"]["View"].get("pages")
     if pages is not None:
         # 分p自动下载
