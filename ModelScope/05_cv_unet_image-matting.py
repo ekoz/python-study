@@ -6,8 +6,7 @@
 # 还需要安装 tensorflow 和 torch，直接在 conda 环境中 pip install 即可
 # BSHM人像抠图，人像抠图对输入含有人像的图像进行处理，无需任何额外输入，实现端到端人像抠图，输出四通道人像抠图结果
 # https://modelscope.cn/models/damo/cv_unet_image-matting/summary
-import time
-
+import datetime
 import cv2
 from modelscope.pipelines import pipeline
 from modelscope.utils.constant import Tasks
@@ -29,5 +28,8 @@ portrait_matting = pipeline(Tasks.portrait_matting, model=model_path)
 result = portrait_matting("data/assets/05_image_matting.png")
 
 cv2.imwrite(
-    "data/output/05_result_{}.png".format(time.time()), result[OutputKeys.OUTPUT_IMG]
+    "data/output/05_result_{}.png".format(
+        datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+    ),
+    result[OutputKeys.OUTPUT_IMG],
 )

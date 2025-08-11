@@ -3,3 +3,5 @@ PaddleOCR/ppocr_img/
 OpenCV/data/
 ModelScope/data/
 
+wufan/
+.gradio/

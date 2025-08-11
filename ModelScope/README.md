@@ -7,10 +7,27 @@ https://modelscope.cn/docs/intro/environment-setup
 tensorflow、torch 的版本兼容性，和镜像名版本号保持一致即可
 
 ## 当前工程的版本
-详见 `requirements.txt`
+> torch, tensorflow, modelscope 安装完毕后，再基于 `requirements.txt` 中列出的 transformers, tokenizers, numpy, datasets, opencv 的版本进行安装，遇到报错，再基于报错提示安装库即可
 
+### python 版本
+https://www.python.org/doc/versions/
 
+### torch 版本
+https://pytorch.org/get-started/previous-versions/
+```
+conda install pytorch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 pytorch-cuda=12.4 -c pytorch -c nvidia
+or
+pip install torch==2.3.1 torchvision==0.18.1 torchaudio==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+```
 
+### tensorflow 版本
+
+https://www.tensorflow.org/versions
+
+https://www.tensorflow.org/install/pip?hl=zh-cn
+
+### modelscope 版本
+https://modelscope.cn/docs/intro/environment-setup
 
 
 ## 常见报错

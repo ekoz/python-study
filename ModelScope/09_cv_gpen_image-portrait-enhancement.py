@@ -16,9 +16,7 @@ model_path_offline = "C:\\Users\\zhanzhao\\.cache\\modelscope\\hub\\damo\\cv_gpe
 model_path = "damo/cv_gpen_image-portrait-enhancement"
 
 
-portrait_enhancement = pipeline(
-    Tasks.image_portrait_enhancement, model=model_path
-)
+portrait_enhancement = pipeline(Tasks.image_portrait_enhancement, model=model_path)
 result = portrait_enhancement("data/assets/07_result.png_1.png")
 cv2.imwrite(
     "data/output/09_result_{}.png".format(time.time()), result[OutputKeys.OUTPUT_IMG]
