@@ -1,79 +1,100 @@
 # -*- coding: utf-8 -*-
 # @author   :   eko.zhan
 # @time     :   2024/8/1 15:48
-
-from util.avid import av2bv, bv2av
-import requests
+from config import ConfigManager
+from downloader import BBDownLoader
 import os
-import subprocess
-import configparser
+from bilibili_api import BilibiliAPI
+from pathlib import Path
+from logger import get_logger
+
+logger = get_logger()
 
 os.environ["PYTHONIOENCODING"] = "utf-8"
 
-config = configparser.RawConfigParser()
-config.read("config.ini", encoding="utf-8")
-ddown_path = config["DEFAULT"]["ddown_path"]
 
-robot_cookie = config["DEFAULT"]["cookie"]
-# 只下载当前视频，不考虑分p列表
-only_current = config["DEFAULT"]["only_current"]
-# 是否只下载音频，默认只下载音频，1-是；0-否
-audio_only = config["DEFAULT"]["audio_only"]
-# 是否是合集下载
-season_download = config["DEFAULT"]["season_download"]
-# 如果是合集下载，需要依赖 mid 和 season_id
-mid = config["DEFAULT"]["mid"]
-season_id = config["DEFAULT"]["season_id"]
+def main():
+    # 初始化配置
+    try:
+        logger.info("开始初始化...")
+        config = ConfigManager()
 
-audio_only_arg = "--audio-only"
-if audio_only=="0":
-    audio_only_arg = "--skip-ai"
+        # 验证配置
+        config_errors = config.validate_config()
+        if config_errors:
+            for key, error in config_errors.items():
+                logger.error(error)
+            raise ValueError("配置验证失败，请检查配置文件")
 
-# 请输入你要下载的b站视频的 bvid，即 https://www.bilibili.com/video/BV1nx4y1471s/ 中的 BV1nx4y1471s 这部分
-bvid = config["DEFAULT"]["bvid"]
+        # 初始化组件
+        api = BilibiliAPI(config.get(key="cookie"))
+        downloader = BBDownLoader(config.get(key="ddown_path"))
 
-headers = {
-    "Cookie": robot_cookie,
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
-}
+        # 获取配置参数
+        bvid = config.get(key="bvid")
+        season_download = config.get_boolean("season_download")
+        audio_only = config.get_boolean("audio_only")
+        current_only = config.get_boolean("current_only")
 
-avid = bv2av(bvid)
+        logger.info(f"开始处理B站视频下载任务")
+        logger.info(f"BVID: {bvid}")
+        logger.info(f"合集下载: {season_download}")
+        logger.info(f"仅音频: {audio_only}")
+        logger.info(f"仅当前视频: {current_only}")
 
-if season_download=="1":
-    if not os.path.exists(season_id):
-        os.mkdir(season_id)
+        if season_download:
+            # 合集下载模式
+            mid = config.get(key="mid")
+            season_id = config.get(key="season_id")
 
-    url_seasons_archives_list = (
-        f"https://api.bilibili.com/x/polymer/web-space/seasons_archives_list?"
-        f"mid={mid}"
-        f"&season_id={season_id}"
-        f"&page_num=1&page_size=100&web_location=333.1387&sort_reverse=false"
-    )
-    resp = requests.get(
-        url_seasons_archives_list,
-        headers=headers,
-    )
-    archives = resp.json()['data']['archives']
-    for archive in archives:
-        archive_id = archive['bvid']
-        # 该链接是单个视频，下载该文件即可
-        url_video = f"https://www.bilibili.com/video/{archive_id}"
-        return_code = subprocess.call(
-            [ddown_path, url_video, audio_only_arg, "-p", "1", "--work-dir", season_id], shell=True
-        )
-        print(f"下载 {url_video}，获取结果 {return_code}")
-else:
-    if only_current == "1":
-        # 该链接是单个视频，下载该文件即可
-        url_video = f"https://www.bilibili.com/video/{bvid}"
-        return_code = subprocess.call(
-            [ddown_path, url_video, audio_only_arg, "-p", "1"], shell=True
-        )
-        print(f"下载 {url_video}，获取结果 {return_code}")
-    else:
-        # 可以直接下载序列视频
-        url_video = f"https://www.bilibili.com/video/{bvid}"
-        return_code = subprocess.call(
-            [ddown_path, url_video, audio_only_arg], shell=True
-        )
-        print(f"下载 {url_video}，获取结果 {return_code}")
+            if not mid or not season_id:
+                raise ValueError("合集下载模式下必须提供 mid 和 season_id")
+
+            logger.info(f"合集信息 - UP主ID: {mid}, 合集ID: {season_id}")
+
+            # 创建合集目录
+            work_dir = Path(season_id)
+            work_dir.mkdir(exist_ok=True)
+
+            # 获取合集视频列表
+            archives = api.get_season_archives(mid, season_id)
+            if not archives:
+                raise RuntimeError("无法获取合集视频列表")
+
+            logger.info(f"获取到 {len(archives)} 个视频")
+
+            # 构建视频URL列表
+            video_urls = [
+                f"https://www.bilibili.com/video/{archive['bvid']}"
+                for archive in archives
+            ]
+
+            # 批量下载
+            results = downloader.download_batch_videos(
+                video_urls,
+                audio_only=audio_only,
+                current_only=True,
+                work_dir=str(work_dir),
+            )
+
+        else:
+            # 单视频下载模式
+            video_url = f"https://www.bilibili.com/video/{bvid}"
+            logger.info(f"下载单个视频: {video_url}")
+
+            success = downloader.download_single_video(
+                video_url, audio_only=audio_only, current_only=current_only
+            )
+
+            if not success:
+                raise RuntimeError("单视频下载失败")
+
+        logger.info("所有下载任务完成")
+
+    except Exception as e:
+        logger.error(f"程序执行出错: {e}")
+        raise
+
+
+if __name__ == "__main__":
+    main()
